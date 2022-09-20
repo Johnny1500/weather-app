@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{ msg }}
+    <input type="text" placeholder="Search for city" @input="handleChange" />
   </div>
 </template>
 
@@ -13,7 +13,11 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-const msg = "Hello weather app!";
+const emit = defineEmits(["cityChange"]);
+
+const handleChange = (event: Event) => {
+  emit("cityChange", event.target.value);
+};
 </script>
 
 <style scoped></style>

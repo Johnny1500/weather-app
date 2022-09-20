@@ -1,5 +1,6 @@
 <template>
-  <SearchCity />
+  <SearchCity @city-change="handleSearchCity" />
+  <p>{{ cityName }}</p>
 </template>
 
 <script lang="ts">
@@ -10,6 +11,16 @@ export default defineComponent({
   name: "App",
   components: {
     SearchCity,
+  },
+  data() {
+    return {
+      cityName: "",
+    };
+  },
+  methods: {
+    handleSearchCity(city: any) {
+      this.cityName = city;
+    },
   },
 });
 </script>
