@@ -16,7 +16,7 @@ export default defineComponent({
 const emit = defineEmits(["cityChange"]);
 
 const handleChange = (event: Event) => {
-  emit("cityChange", event.target.value);
+  emit("cityChange", (event.target as HTMLInputElement).value);
 };
 </script>
 
