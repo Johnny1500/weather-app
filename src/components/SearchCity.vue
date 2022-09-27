@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <input type="text" placeholder="Search for city" @input="handleChange" />
-  </div>
+  <input
+    type="text"
+    placeholder="Search for city"
+    @input="handleChange"
+    id="search-city"
+  />
 </template>
 
 <script lang="ts">
@@ -20,4 +23,20 @@ const handleChange = (event: Event) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#search-city {
+  width: 100%;
+  font-size: large;
+  padding: 5px 0px 5px 10px;
+  font-weight: bold;
+  box-sizing: border-box;
+  border: none;
+  border: 1px solid #000;
+  border-radius: 3px;
+}
+
+#search-city:focus {
+  border: none;
+  outline: 2px solid #3eaf7c;
+}
+</style>
