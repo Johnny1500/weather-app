@@ -1,14 +1,20 @@
 <template>
   <SearchCity @city-change="handleSearchCity" />
-  <ul id="selected-cities-array">
-    <li
-      v-for="item in selectedGeoDBCities"
-      :key="item['id']"
-      class="selected-city"
-    >
-      {{ item["name"] }}
-    </li>
-  </ul>
+  <div id="selected-cities-array" v-show="cityInput.length > 0">
+    <ul v-if="!loadingCities">
+      <li
+        v-for="item in selectedGeoDBCities"
+        :key="item['id']"
+        class="selected-city"
+        value="item['name']"
+        @click="handleSelectedCity(item['name'])"
+      >
+        {{ item["name"] }}
+      </li>
+    </ul>
+    <div v-else>Loading...</div>
+  </div>
+  <div>{{ selectedCity }}</div>
 </template>
 
 <script lang="ts">
@@ -27,6 +33,7 @@ export default defineComponent({
       selectedGeoDBCities: [],
       selectedCity: "",
       cityInput: "",
+      loadingCities: false,
     };
   },
   watch: {
@@ -41,6 +48,8 @@ export default defineComponent({
     // @ts-ignore
     this.searchFromGeoDB = debounce(async (newCityInput) => {
       try {
+        this.loadingCities = true;
+
         const response = await fetch(
           `${GEO_API_URL}/cities?minPopulation=1000000&namePrefix=${newCityInput}`,
           options
@@ -49,6 +58,8 @@ export default defineComponent({
         console.log("cities", cities);
 
         this.selectedGeoDBCities = cities.data;
+
+        this.loadingCities = false;
       } catch (error) {
         console.log("error during fetch cities", error);
       }
@@ -63,6 +74,9 @@ export default defineComponent({
     handleSearchCity(cityInput: string) {
       this.cityInput = cityInput;
     },
+    handleSelectedCity(selectedCity: string) {
+      this.selectedCity = selectedCity;
+    },
   },
 });
 </script>
@@ -76,10 +90,10 @@ export default defineComponent({
 }
 
 #selected-cities-array {
+  min-height: 50px;
   max-width: 100%;
   margin: 10px auto;
   padding: auto;
-  list-style-type: none;
   background-color: #fff;
   font-size: large;
 }
@@ -92,6 +106,7 @@ export default defineComponent({
 
 ul {
   padding-inline-start: 0px;
+  list-style-type: none;
 }
 
 body {

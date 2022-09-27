@@ -34,9 +34,4 @@ const handleChange = (event: Event) => {
   border: 1px solid #000;
   border-radius: 3px;
 }
-
-#search-city:focus {
-  border: none;
-  outline: 2px solid #3eaf7c;
-}
 </style>
