@@ -1,6 +1,14 @@
 <template>
   <SearchCity @city-change="handleSearchCity" />
-  <p>{{ cityInput }}</p>
+  <ul id="selected-cities-array">
+    <li
+      v-for="item in selectedGeoDBCities"
+      :key="item['id']"
+      class="selected-city"
+    >
+      {{ item["name"] }}
+    </li>
+  </ul>
 </template>
 
 <script lang="ts">
@@ -16,7 +24,8 @@ export default defineComponent({
   },
   data() {
     return {
-      cityName: "",
+      selectedGeoDBCities: [],
+      selectedCity: "",
       cityInput: "",
     };
   },
@@ -30,7 +39,7 @@ export default defineComponent({
   created() {
     // eslint-disable-next-line
     // @ts-ignore
-    this.searchFromGeoDB = debounce(async (newCityInput, oldCityInput) => {
+    this.searchFromGeoDB = debounce(async (newCityInput) => {
       try {
         const response = await fetch(
           `${GEO_API_URL}/cities?minPopulation=1000000&namePrefix=${newCityInput}`,
@@ -38,10 +47,12 @@ export default defineComponent({
         );
         const cities = await response.json();
         console.log("cities", cities);
+
+        this.selectedGeoDBCities = cities.data;
       } catch (error) {
         console.log("error during fetch cities", error);
       }
-    }, 1100);
+    }, 1200);
   },
   beforeUnmount() {
     // eslint-disable-next-line
@@ -62,6 +73,25 @@ export default defineComponent({
   color: #2c3e50;
   max-width: 1080px;
   margin: 20px auto;
+}
+
+#selected-cities-array {
+  max-width: 100%;
+  margin: 10px auto;
+  padding: auto;
+  list-style-type: none;
+  background-color: #fff;
+  font-size: large;
+}
+
+.selected-city {
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 1px solid;
+}
+
+ul {
+  padding-inline-start: 0px;
 }
 
 body {
