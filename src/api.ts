@@ -1,4 +1,4 @@
-export const options = {
+export const geoOptions = {
   method: "GET",
   headers: {
     "X-RapidAPI-Key": "e667d576camsh53f933085607574p1986dcjsn2a027111c001",

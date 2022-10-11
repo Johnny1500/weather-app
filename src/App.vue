@@ -1,27 +1,11 @@
 <template>
-  <SearchCity @city-change="handleSearchCity" />
-  <div id="selected-cities-array" v-show="cityInput.length > 0">
-    <ul v-if="!loadingCities">
-      <li
-        v-for="item in selectedGeoDBCities"
-        :key="item['id']"
-        class="selected-city"
-        value="item['name']"
-        @click="handleSelectedCity(item['name'])"
-      >
-        {{ item["name"] }}
-      </li>
-    </ul>
-    <div v-else>Loading...</div>
-  </div>
+  <SearchCity @city-change="handleSelectedCity" />
   <div>{{ selectedCity }}</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import SearchCity from "./components/SearchCity.vue";
-import { options, GEO_API_URL } from "./api";
-import { debounce } from "lodash";
 
 export default defineComponent({
   name: "App",
@@ -30,50 +14,10 @@ export default defineComponent({
   },
   data() {
     return {
-      selectedGeoDBCities: [],
       selectedCity: "",
-      cityInput: "",
-      loadingCities: false,
     };
   },
-  watch: {
-    cityInput(...args) {
-      // eslint-disable-next-line
-      // @ts-ignore
-      this.searchFromGeoDB(...args);
-    },
-  },
-  created() {
-    // eslint-disable-next-line
-    // @ts-ignore
-    this.searchFromGeoDB = debounce(async (newCityInput) => {
-      try {
-        this.loadingCities = true;
-
-        const response = await fetch(
-          `${GEO_API_URL}/cities?minPopulation=1000000&namePrefix=${newCityInput}`,
-          options
-        );
-        const cities = await response.json();
-        console.log("cities", cities);
-
-        this.selectedGeoDBCities = cities.data;
-
-        this.loadingCities = false;
-      } catch (error) {
-        console.log("error during fetch cities", error);
-      }
-    }, 1200);
-  },
-  beforeUnmount() {
-    // eslint-disable-next-line
-    // @ts-ignore
-    this.searchFromGeoDB.cancel();
-  },
   methods: {
-    handleSearchCity(cityInput: string) {
-      this.cityInput = cityInput;
-    },
     handleSelectedCity(selectedCity: string) {
       this.selectedCity = selectedCity;
     },
@@ -87,26 +31,6 @@ export default defineComponent({
   color: #2c3e50;
   max-width: 1080px;
   margin: 20px auto;
-}
-
-#selected-cities-array {
-  min-height: 50px;
-  max-width: 100%;
-  margin: 10px auto;
-  padding: auto;
-  background-color: #fff;
-  font-size: large;
-}
-
-.selected-city {
-  cursor: pointer;
-  padding: 5px;
-  border-bottom: 1px solid;
-}
-
-ul {
-  padding-inline-start: 0px;
-  list-style-type: none;
 }
 
 body {
