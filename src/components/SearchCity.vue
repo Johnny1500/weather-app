@@ -3,7 +3,7 @@
     type="text"
     placeholder="Search for city"
     v-model="cityInput"
-    id="search-city"
+    id="search-city-input"
   />
   <div id="selected-cities-array" v-show="cityInput.length > 0">
     <ul v-if="!loadingCities">
@@ -11,7 +11,6 @@
         v-for="item in selectedGeoDBCities"
         :key="item['id']"
         class="selected-city"
-        value="item['name']"
         @click="handleSelectedSearchCity(item['name'])"
       >
         {{ item["name"] }}
@@ -81,7 +80,7 @@ const handleSelectedSearchCity = (city: string) => {
 </script>
 
 <style scoped>
-#search-city {
+#search-city-input {
   width: 100%;
   font-size: large;
   padding: 5px 0px 5px 10px;
@@ -89,7 +88,7 @@ const handleSelectedSearchCity = (city: string) => {
   box-sizing: border-box;
   border: none;
   border: 1px solid #000;
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 #selected-cities-array {
@@ -97,12 +96,14 @@ const handleSelectedSearchCity = (city: string) => {
   padding: auto;
   background-color: #fff;
   font-size: large;
+  border-radius: 5px;
 }
 
 .selected-city {
+  text-align: left;
   cursor: pointer;
   padding: 5px;
-  border-bottom: 1px solid;
+  padding-left: 10px;
 }
 
 ul {
