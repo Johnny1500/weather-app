@@ -1,22 +1,28 @@
 <template>
-  <input
-    type="text"
-    placeholder="Search for city"
-    v-model="cityInput"
-    id="search-city-input"
-  />
-  <div id="selected-cities-array" v-show="cityInput.length > 0">
-    <ul v-if="!loadingCities">
-      <li
-        v-for="item in selectedGeoDBCities"
-        :key="item['id']"
-        class="selected-city"
-        @click="handleSelectedSearchCity(item['name'])"
-      >
-        {{ item["name"] }}
-      </li>
-    </ul>
-    <div v-else>Loading...</div>
+  <div>
+    <input
+      type="text"
+      placeholder="Search for city"
+      v-model="cityInput"
+      id="search-city-input"
+      @focus="handleCityInputFocus"
+    />
+    <div
+      id="selected-cities-array"
+      v-show="isCityInputFocus && selectedGeoDBCities.length > 0"
+    >
+      <ul v-if="!loadingCities">
+        <li
+          v-for="item in selectedGeoDBCities"
+          :key="item['id']"
+          class="selected-city"
+          @click="handleSelectedSearchCity(item['name'])"
+        >
+          {{ item["name"] }}
+        </li>
+      </ul>
+      <div v-else>Loading...</div>
+    </div>
   </div>
 </template>
 
@@ -27,11 +33,13 @@ import { geoOptions, GEO_API_URL } from "../api";
 
 export default defineComponent({
   name: "SearchCity",
+  emits: ["cityChange"],
   data() {
     return {
       selectedGeoDBCities: [],
       cityInput: "",
       loadingCities: false,
+      isCityInputFocus: true,
     };
   },
   watch: {
@@ -53,7 +61,7 @@ export default defineComponent({
           geoOptions
         );
         const cities = await response.json();
-        console.log("cities", cities);
+        // console.log("cities", cities);
 
         this.selectedGeoDBCities = cities.data;
 
@@ -63,20 +71,25 @@ export default defineComponent({
       }
     }, 1200);
   },
+  beforeUpdate() {
+    console.log(this);
+  },
   beforeUnmount() {
     // eslint-disable-next-line
     // @ts-ignore
     this.searchFromGeoDB.cancel();
   },
+  methods: {
+    handleSelectedSearchCity(city: string) {
+      this.cityInput = city;
+      this.$emit("cityChange", city);
+      this.isCityInputFocus = false;
+    },
+    handleCityInputFocus() {
+      this.isCityInputFocus = true;
+    },
+  },
 });
-</script>
-
-<script setup lang="ts">
-const emit = defineEmits(["cityChange"]);
-
-const handleSelectedSearchCity = (city: string) => {
-  emit("cityChange", city);
-};
 </script>
 
 <style scoped>
